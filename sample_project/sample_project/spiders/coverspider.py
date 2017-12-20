@@ -40,4 +40,4 @@ class CoverSpider(scrapy.Spider):
         pub = "{}-{}-{}".format(d.year, str(d.month).zfill(2), str(d.day).zfill(2))
  
         # yield the result
-        yield MagazineCover(title=title, pubDate=pub, file_urls=[imageURL])
+        yield LawItem((title=title, pubDate=pub, file_urls=[imageURL])
