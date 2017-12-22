@@ -14,28 +14,28 @@ class LogoSpider(scrapy.Spider):
     print("*"*500)
     def parse(self, response):
         print("6"*500)
-        def harcode_img():
-            print("&"*500)
+        # def harcode_img():
+        print("&"*500)
 
-            #Here we try to find the logo in pattern:
-            #<div id="header"><a><img>
-            headers = ["#Header", "#header", "#HEADER"]
-            for header in headers:
-                pattern_header=response.css(header)
-                if pattern_header:
-                    if pattern_header.xpath("//a/img/@src"):
-                        url = response
-                        file_url = pattern_header.xpath("//a/img/@src").extract_first()
-                        yield LogoScrapeItem(title=url, file_urls=file_url)
-
-            # Here we try to find logo if site uses <header>
-            if response.xpath("//header"):
-                #<header><a><img>
-                header_a_img = response.xpath("//header//a/img/@src")
-                if header_a_img:
+        #Here we try to find the logo in pattern:
+        #<div id="header"><a><img>
+        headers = ["#Header", "#header", "#HEADER"]
+        for header in headers:
+            pattern_header=response.css(header)
+            if pattern_header:
+                if pattern_header.xpath("//a/img/@src"):
                     url = response
-                    file_url = header_a_img.extract_first()
+                    file_url = pattern_header.xpath("//a/img/@src").extract_first()
                     yield LogoScrapeItem(title=url, file_urls=file_url)
+
+        # Here we try to find logo if site uses <header>
+        if response.xpath("//header"):
+            #<header><a><img>
+            header_a_img = response.xpath("//header//a/img/@src")
+            if header_a_img:
+                url = response
+                file_url = header_a_img.extract_first()
+                yield LogoScrapeItem(title=url, file_urls=file_url)
         print("start"*500)
-        harcode_img()
+        # harcode_img()
         print("end"*500)
