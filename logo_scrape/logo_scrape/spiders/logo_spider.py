@@ -1,16 +1,19 @@
 from logo_scrape.items import LogoScrapeItem
+
 import datetime
 import scrapy
 
 
 class LogoSpider(scrapy.Spider):
     name = logo_spider
-    start_urls = ["https://advokatarnaudov.com/категории-правни-услуги/търговско-и-банково-право/"]
+    start_urls = ["http://time.com"]
 
     def parse(self, response):
-        
+        hardcode_img()
         def harcode_img():
 
+            #Here we try to find the logo in pattern:
+            #<div id="header"><a><img>
             headers = ["#Header", "#header", "#HEADER"]
             for header in headers:
                 pattern_header=response.css(header)
@@ -18,6 +21,15 @@ class LogoSpider(scrapy.Spider):
                     if pattern_header.xpath("//a/img/@src"):
                         url = response
                         file_url = pattern_header.xpath("//a/img/@src").extract_first()
-                        yield LogoScrapeItem((title=url, file_urls=file_url)
+                        yield LogoScrapeItem(title=url, file_urls=file_url)
+
+            # Here we try to find logo if site uses <header>
+
+            if response.xpath("//header"):
+                #<header><a><img>
+                header_a_img = response.xpath("//header//a/img/@src")
+                if header_a_img:
+                    url = response
+                    file_url = header_a_img.extract_first()
 
         harcode_img()
