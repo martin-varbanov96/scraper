@@ -5,11 +5,10 @@ import scrapy
 
 
 class LogoSpider(scrapy.Spider):
-    name = logo_spider
+    name = "logo_spider"
     start_urls = ["http://time.com"]
 
     def parse(self, response):
-        hardcode_img()
         def harcode_img():
 
             #Here we try to find the logo in pattern:
