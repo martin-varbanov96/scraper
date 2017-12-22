@@ -1,17 +1,17 @@
 # import the necessary packages
-from timecoverspider.items import LawItem
+from sample_project.items import LawItem
 import datetime
 import scrapy
 
 
 class CoverSpider(scrapy.Spider):
-    name = "pyimagesearch-cover-spider"
-    start_urls = ["https://advokatarnaudov.com/категории-правни-услуги/търговско-и-банково-право/"]
+    name = "test_spider"
+    start_urls = ["https://www.abv.bg"]
 
     def parse(self, response):
         # let's only gather Time U.S. magazine covers
         # url = response.css("div.refineCol ul li").xpath("a[contains(., 'TIME U.S.')]")
-        for div in response.xpath('//header//div'):
+        for div in response.xpath('//div'):
             print(div.xpath('./a'))
         # yield scrapy.Request(url.xpath("@href").extract_first(), self.parse_page)
 
