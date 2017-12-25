@@ -10,32 +10,23 @@ class LogoSpider(scrapy.Spider):
 
     def start_requests(self):
         yield scrapy.Request("http://time.com", self.parse)
+        yield scrapy.Request("https://git-scm.com/docs/git-merge", self.parse)
+        yield scrapy.Request("https://www.pythoncentral.io/one-line-if-statement-in-python-ternary-conditional-operator/", self.parse)
 
-    print("*"*500)
     def parse(self, response):
-        print("6"*500)
-        # def harcode_img():
-        print("&"*500)
+        # TODO:: Here these methods make may copy burger button or similar
 
-        #Here we try to find the logo in pattern:
-        #<div id="header"><a><img>
-        headers = ["#Header", "#header", "#HEADER"]
-        for header in headers:
-            pattern_header=response.css(header)
-            if pattern_header:
-                if pattern_header.xpath("//a/img/@src"):
-                    url = response
-                    file_url = pattern_header.xpath("//a/img/@src").extract_first()
-                    yield LogoScrapeItem(title=url, file_urls=file_url)
+        patterns_trees = [response.css("#Header").xpath("//a/img/@src"), 
+                            response.css("#HEADER").xpath("//a/img/@src"),    
+                            response.css("#header").xpath("//a/img/@src"),
+                            response.xpath("//header//a/img/@src"),
 
-        # Here we try to find logo if site uses <header>
-        if response.xpath("//header"):
+
+        ]
+        for pattern_tree in patterns_trees:
+            if pattern_tree:
             #<header><a><img>
-            header_a_img = response.xpath("//header//a/img/@src")
-            if header_a_img:
                 url = response
-                file_url = header_a_img.extract_first()
+                file_url = pattern_tree.extract_first()
                 yield LogoScrapeItem(title=url, file_urls=file_url)
-        print("start"*500)
-        # harcode_img()
-        print("end"*500)
+        
