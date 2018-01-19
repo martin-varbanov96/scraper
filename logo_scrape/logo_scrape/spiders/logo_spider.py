@@ -19,6 +19,46 @@ def get_data():
                 # output_list.append(el_https)
         return output_list
 
+
+def pattern_0(input_url): response.css("#Header").xpath("//a/img/@src")
+
+
+def pattern_1(input_url): response.css("#HEADER").xpath("//a/img/@src")
+
+
+def pattern_2(input_url): response.css("#Header").xpath("//a/img/@src")
+
+
+def pattern_3(input_url): response.css("#header").xpath("//a/img/@src")
+
+
+def pattern_4(input_url): response.xpath("//header//a/img/@src")
+
+
+def pattern_5(input_url): response.xpath("//a[@href='"+input_url+'/'+"']/img/@src")
+
+
+def pattern_6(input_url): response.xpath("//a[@href='/']/img/@src")
+
+
+
+# class patternTrees:
+#     patterns = [response.css("#Header").xpath("//a/img/@src"),
+#                 response.css("#HEADER").xpath("//a/img/@src"),
+#                 response.css("#header").xpath("//a/img/@src"),
+#                 response.xpath("//header//a/img/@src"),
+#                 response.xpath("//a[@href='"+response.url+'/'+"']/img/@src"),
+#                 response.xpath("//a[@href='"+response.url+'/'+"']/img/@src"),
+#                 response.css("header").xpath("//a[@href='/']/img/@src"),
+#                 response.xpath("//a[@href='/']/img/@src")
+#                 ]
+
+#     def length_patterns(self):
+#         return len(patterns)
+
+#     def get_pattern_by_index(index, url)
+
+
 class LogoSpider(scrapy.Spider):
     name = "logo_spider"
 
@@ -33,7 +73,9 @@ class LogoSpider(scrapy.Spider):
         #    logging.exception("MSG"*500)
     
     def parse_within_page(self, response):
-                return response.meta.get('pattern_tree')
+                func = response.meta.get('pattern_tree')
+                arg = response.meta.get("home_url")
+                return func(arg)
 
 
     def parse(self, response):
@@ -44,16 +86,16 @@ class LogoSpider(scrapy.Spider):
             yield LogoScrapeItem(reponse_code=response_status_code)
         # TODO:: We add false data
 
-        # here we set possible patterns and check if they are found:
-        patterns_trees = [response.css("#Header").xpath("//a/img/@src"), 
-                          response.css("#HEADER").xpath("//a/img/@src"),    
-                          response.css("#header").xpath("//a/img/@src"),
-                          response.xpath("//header//a/img/@src"),
-                          response.xpath("//a[@href='"+response.url+'/'+"']/img/@src"),
-                          response.xpath("//a[@href='"+response.url+'/'+"']/img/@src"),
-                          response.css("header").xpath("//a[@href='/']/img/@src"),
-                          response.xpath("//a[@href='/']/img/@src")
+        # list of pattern functions
+        patterns_trees = [pattern_0,
+                          pattern_1,
+                          pattern_2,
+                          pattern_3,
+                          pattern_4,
+                          pattern_5,
+                          pattern_6,
                           ]
+
         pattern_number = 0
         for pattern_tree in patterns_trees:
             def getFinalImage(input_dict):
@@ -79,10 +121,12 @@ class LogoSpider(scrapy.Spider):
                     if not re.match(valid_url_pattern, str(link_to_next_page)):
                         continue    
                     iterated_links_counter += 1
-                    pattern_response=True
+                    pattern_response = True
                     pattern_response = scrapy.Request(str(href.xpath("@href").extract_first()),
                                                       self.parse_within_page,
-                                                      meta={"pattern_tree": str(patterns_trees[pattern_number])}
+                                                      meta={"pattern_tree": pattern_tree,
+                                                            "home_url": response.url
+                                                            }
                                                       )
                     if pattern_response:
                         flag_to_yield = True
