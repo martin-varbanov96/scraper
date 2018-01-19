@@ -31,6 +31,10 @@ class LogoSpider(scrapy.Spider):
       #      yield scrapy.Request("https://www.wyndhamhotels.com/en-uk", self.parse)
        # except TimeoutError as e:
         #    logging.exception("MSG"*500)
+    
+    def parse_within_page(self, response):
+                return response.meta.get('pattern_tree')
+
 
     def parse(self, response):
         pattern_regex = r"<[0-9][0-9][0-9]\W"
@@ -52,9 +56,6 @@ class LogoSpider(scrapy.Spider):
                           ]
         pattern_number = 0
         for pattern_tree in patterns_trees:
-            def parse_within_page(self, response):
-                return pattern_tree
-
             def getFinalImage(input_dict):
                 greatest_count = 0
                 greatest_string = ""
@@ -70,15 +71,27 @@ class LogoSpider(scrapy.Spider):
             most_common_image_found = ""
             amount_most_common_image_found = 0
             for href in response.xpath("//a"):
-                    iterated_links_counter += 1
                     if iterated_links_counter >= 10:
                         break
-                    pattern_response = scrapy.Request(href.xpath("@href").extract_first(),
-                                                      self.parse_within_page())
+                    valid_url_pattern = r"https?://.+"
+
+                    link_to_next_page = href.xpath("@href").extract_first()
+                    if not re.match(valid_url_pattern, str(link_to_next_page)):
+                        continue    
+                    iterated_links_counter += 1
+                    pattern_response=True
+                    pattern_response = scrapy.Request(str(href.xpath("@href").extract_first()),
+                                                      self.parse_within_page,
+                                                      meta={"pattern_tree": str(patterns_trees[pattern_number])}
+                                                      )
                     if pattern_response:
                         flag_to_yield = True
                         links_list.append(pattern_response)
+            print(links_list)
+            print("*"*50) 
             links_dict = Counter(links_list)
+            print(links_dict)
+            print("^"*50)
             most_common_image_found, amount_most_common_image_found = getFinalImage(links_dict)
 
             if flag_to_yield:
@@ -93,5 +106,5 @@ class LogoSpider(scrapy.Spider):
                                      found_img=True,
                                      is_http="",
                                      is_https="",
-                                     succsses_rate=amount_of_same_image)
+                                     succsses_rate=amount_most_common_image_found)
 
