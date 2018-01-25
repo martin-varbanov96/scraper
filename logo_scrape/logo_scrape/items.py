@@ -9,7 +9,11 @@ import scrapy
 
 
 class LogoScrapeItem(scrapy.Item):
-    url = scrapy.Field()
-    file_url = scrapy.Field()
-    files = scrapy.Field()
-       
+    site_id = scrapy.Field()
+    link_id = scrapy.Field() 
+    status = scrapy.Field()
+    current_link = scrapy.Field()
+    link_img = scrapy.Field()
+    pattern_id = scrapy.Field()
+    found_img = scrapy.Field()
+
