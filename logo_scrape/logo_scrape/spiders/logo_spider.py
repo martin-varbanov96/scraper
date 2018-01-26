@@ -4,7 +4,7 @@ import re
 import csv
 
 def get_data():
-    path = 'logo_scrape/static/data.csv'
+    path = 'logo_scrape/static/tmp_data.csv'
     output_list = list()
     with open(path) as f:
         data_read = csv.reader(f, delimiter='\n')
@@ -24,7 +24,7 @@ class LogoSpider(scrapy.Spider):
         self.site_id = 0
         for el in get_data():
             yield scrapy.Request(el, self.parse)
-        #yield scrapy.Request("https://time.com/", self.parse)
+        yield scrapy.Request("https://time.com/", self.parse)
 
     def parse(self, response):
         self.site_id += 1
